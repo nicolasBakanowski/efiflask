@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.secret_key = "secret"
-app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://root:nbaka145236@localhost/manageremploye'
+app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://root:pass@localhost/manageremploye'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db = SQLAlchemy(app)
 
