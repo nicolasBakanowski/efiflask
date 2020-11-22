@@ -1,0 +1,65 @@
+.colorFondo {
+    background-color: salmon;
+
+}
+
+body {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.buttonLoginMargin {
+    margin-top: -110px
+}
+
+.paddingLogin {
+    padding-left: 390px;
+}
+
+.marginButtonRight {
+    margin-right: 20px;
+}
+
+.buttonFontSize { 
+    font-size: 30px;
+}
+
+.borderDashed {
+    border-style: dashed;
+}
+
+.adminButtonSize {
+    font-size: 90px;
+}
+
+.containerMarginTop{
+    margin-top: 300px
+}
+
+.footer {
+    background-color: rgb(88, 88, 88);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    text-align: center;
+    color: white;
+}
+.MarginTop{
+    margin-top: 30px;
+
+}
+
+.header-color {
+    background-color: rgb(128, 0, 0);
+}
+
+.image-header-size{
+    height: 150px;
+    max-width: 100%;
+}
+
+.logoFooterAjuste {
+    width: 70px;
+    height: 70px;
+    margin-top: 10px;
+}
