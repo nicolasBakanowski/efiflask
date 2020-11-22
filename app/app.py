@@ -8,6 +8,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://root:nbaka145236@localho
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db = SQLAlchemy(app)
 login_manager = LoginManager()
+
 class Employe(db.Model):
     idemploye = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -22,7 +23,7 @@ class Employe(db.Model):
 @app.route("/")
 def index():
     all_employes = Employe.query.all() 
-    return render_template("inicio.html") employes = all_employes)
+    return render_template("index.html",employes = all_employes)
 
 @app.route("/update", methods = ['GET', 'POST'])
 def update ():
