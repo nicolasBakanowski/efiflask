@@ -32,7 +32,7 @@ def update ():
         employe.email = request.form['email']
         employe.phone = request.form['phone']
         db.session.commit()
-        flash("updated correctamente")
+        flash("Actualizado correctamente")
         return redirect(url_for('index'))
 
 @app.route("/insert", methods = ['POST']) 
@@ -44,7 +44,7 @@ def insert():
         newemploye = Employe(name, email, phone)
         db.session.add(newemploye)
         db.session.commit()
-        flash("empleado  insertado con exito")
+        flash("Empleado ingresado con exito")
         return redirect(url_for('index'))
 
 @app.route("/delete/<id>/",methods= ["GET","POST"])
@@ -52,7 +52,7 @@ def delete(id):
     employe = Employe.query.get(id)
     db.session.delete(employe)
     db.session.commit()
-    flash("se borro")
+    flash("El trabajador fue borrado con éxito")
     return redirect(url_for("index"))
 
 if __name__== "__main__":
