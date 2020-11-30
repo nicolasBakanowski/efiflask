@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="row">
+        <div class="col md-12">
+            <div class="jumbotron p-3">
+                    <h2>Lista de <b>empleados</b> </h2>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <div class="table-responsive-sm">
+                        <table class="table table-hover table-dark">
+                            <thead>
+                                <tr>
+                                    <th scope="col"> ID </th>
+                                    <th scope="col"> Nombre </th>
+                                    <th scope="col"> E-mail </th>
+                                    <th scope="col"> numero </th>
+                                </tr>
+                            </thead>
+                            {% for rows in employes %}
+                            <tr>
+                                <td scope="row">{{rows.idemploye}}</td>
+                                <td scope="row">{{rows.name}}</td>
+                                <td scope="row">{{rows.email}}</td>
+                                <td scope="row">{{rows.phone}}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
