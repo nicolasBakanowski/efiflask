@@ -5,17 +5,54 @@ from flask_login import LoginManager, current_user, login_user, logout_user, log
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import InputRequired, Email, Length, DataRequired
-from models import users, get_user
 from werkzeug.urls import url_parse
+
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+db = SQLAlchemy()
 
 app = Flask(__name__)
 app.secret_key = "secret"
-app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://root:root@localhost/manageremploye'
+app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://root:nbaka145236@localhost/manageremploye'
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 app.config['SECRET_KEY'] = '7110c8ae51a4b5af97be6534caef90e4bb9bdcb3380af008f90b23a5d1616bf319bc298105da20fe'
-db = SQLAlchemy(app)
+
+class User(db.Model, UserMixin):
+    
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    email = db.Column(db.String(256), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)
+    
+        
+
+    def __repr__(self):
+        return f'<User {self.email}>'
+  
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+  
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+  
+    def save(self):
+        if not self.id:
+            db.session.add(self)
+        db.session.commit()
+  
+    @staticmethod
+    def get_by_id(id):
+        return User.query.get(id)
+  
+    @staticmethod
+    def get_by_email(email):
+        return User.query.filter_by(email=email).first()
+
+
+
 
 
 class Employe(db.Model):
@@ -32,16 +69,27 @@ class Employe(db.Model):
 
 @login_manager.user_loader 
 def load_user(user_id):
-    for user in users:
-        if user.id == int(user_id):
-            return user
-    return None
+   return User.get_by_id(int(user_id))
+
+
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Recuérdame')
     submit = SubmitField('Login')
+
+
+class SignupForm(FlaskForm):
+    name = StringField('Nombre', validators=[DataRequired(), Length(max=64)])
+    password = PasswordField('Password', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Registrar')
+
+
+
+
+
 
 @app.route("/")
 def index():
@@ -51,7 +99,30 @@ def index():
 # elementos signup
 @app.route("/signup/", methods=["GET", "POST"])
 def show_signup_form():
-    return render_template("signup_form.html")
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = SignupForm()
+    error = None
+    if form.validate_on_submit():
+        name = form.name.data
+        email = form.email.data
+        password = form.password.data
+    # Comprobamos que no hay ya un usuario con ese email
+        user = User.get_by_email(email)
+        if user is not None:
+            error = f'El email {email} ya está siendo utilizado por otro usuario'
+        else:
+            # Creamos el usuario y lo guardamos
+            user = User(name=name, email=email)
+            user.set_password(password)
+            user.save()
+        # Dejamos al usuario logueado
+            login_user(user, remember=True)
+            next_page = request.args.get('next', None)
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+            return redirect(next_page)
+    return render_template("signup_form.html", form=form, error=error)
 # fin elementos signup
 
 # elementos Login
@@ -61,7 +132,7 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit(): 
-        user = get_user(form.email.data) #si los datos enviados en el formulario son válidos. En ese caso, intentamos recuperar el usuario a partir del email con get_user()
+        user = User.get_by_email(form.email.data) #si los datos enviados en el formulario son válidos. En ese caso, intentamos recuperar el usuario a partir del email con get_user()
         if user is not None and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data) #Si existe un usuario con dicho email y la contraseña coincide, procedemos a autenticar al usuario llamando al método login_user
             next_page = request.args.get('next')
@@ -110,4 +181,8 @@ def delete(id):
     flash("El trabajador fue borrado con éxito")
     return redirect(url_for("index"))
 
-app.run(debug=True) 
+
+if __name__ == '__main__':
+  app.run()
+db.init_app(app)
+ 
