@@ -6,11 +6,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import InputRequired, Email, Length, DataRequired
 from werkzeug.urls import url_parse
-
+from forms import LoginForm,SignupForm
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-db = SQLAlchemy()
 
+db = SQLAlchemy()
 app = Flask(__name__)
 app.secret_key = "secret"
 app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://root:nbaka145236@localhost/manageremploye'
@@ -19,9 +19,7 @@ login_manager.login_view = "login"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 app.config['SECRET_KEY'] = '7110c8ae51a4b5af97be6534caef90e4bb9bdcb3380af008f90b23a5d1616bf319bc298105da20fe'
 
-class User(db.Model, UserMixin):
-    
-    
+class User(db.Model, UserMixin):  
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(256), unique=True, nullable=False)
@@ -51,10 +49,6 @@ class User(db.Model, UserMixin):
     def get_by_email(email):
         return User.query.filter_by(email=email).first()
 
-
-
-
-
 class Employe(db.Model):
     idemploye = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -71,20 +65,6 @@ class Employe(db.Model):
 def load_user(user_id):
    return User.get_by_id(int(user_id))
 
-
-
-class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Recuérdame')
-    submit = SubmitField('Login')
-
-
-class SignupForm(FlaskForm):
-    name = StringField('Nombre', validators=[DataRequired(), Length(max=64)])
-    password = PasswordField('Password', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Registrar')
 
 
 

@@ -10,10 +10,10 @@
         <div>
             {{ form.name.label }}
             {{ form.name(size=64) }}<br>
+            {{ form.email.label }}
             {{ form.email }}<br>
             {{ form.password.label }}
             {{ form.password }}<br>
-
             {% for error in form.name.errors %}
             <span style="color: red;">{{ error }}</span>
             {% endfor %}

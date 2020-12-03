@@ -9,10 +9,10 @@
 {% if current_user.is_anonymous %}
 {% include 'publicview.html'%}
 {% else %}
-<li>{{ current_user.name }}</li>
-
 
 <div class="container">
+  <h3><strong>Bienvenido, {{ current_user.name }}</strong></h3>
+  <button type="button" class="btn btn-dark"><a class="text-light" href="{{ url_for('logout') }}">Log-out</a></button>
   <div class="row">
     <div class="col md-12">
       <div class="jumbotron p-3">
